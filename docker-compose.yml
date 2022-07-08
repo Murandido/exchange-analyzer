@@ -1,0 +1,28 @@
+version: "3.8"
+services:
+    node-webserver:
+        build: "./frontend"
+        container_name: node-webserver
+        ports:
+            - "3000:3000"
+        volumes:
+            - "./frontend:/app"
+        restart: always
+    php-server:
+        build: "./backend/server"
+        ports:
+            - "8080:80"
+        volumes:
+            - "./backend/server:/var/www/html"
+        restart: always
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
+    mysql-db:
+        image: mysql:8.0
+        ports:
+            - "3306:3306"
+        volumes:
+            - "./backend/database:/var/lib/mysql"
+        environment:
+            - MYSQL_ROOT_PASSWORD=27112021
+        restart: always
