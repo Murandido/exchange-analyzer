@@ -26,6 +26,7 @@ yarn-error.log*
 frontend/node_modules
 frontend/.pnp
 frontend/.pnp.js
+frontend/package-lock.json
 
 # testing
 frontend/coverage
@@ -49,4 +50,78 @@ backend/database/*
 !backend/database/dbdumps/
 
 .vscode
+
 .prettierignore
+
+# JPEG
+*.jpg
+*.jpeg
+*.jpe
+*.jif
+*.jfif
+*.jfi
+
+# JPEG 2000
+*.jp2
+*.j2k
+*.jpf
+*.jpx
+*.jpm
+*.mj2
+
+# JPEG XR
+*.jxr
+*.hdp
+*.wdp
+
+# Graphics Interchange Format
+*.gif
+
+# RAW
+*.raw
+
+# Web P
+*.webp
+
+# Portable Network Graphics
+*.png
+
+# Animated Portable Network Graphics
+*.apng
+
+# Multiple-image Network Graphics
+*.mng
+
+# Tagged Image File Format
+*.tiff
+*.tif
+
+
+# Portable Document Format
+*.pdf
+
+# X BitMap
+*.xbm
+
+# BMP
+*.bmp
+*.dib
+
+# ICO
+*.ico
+
+# 3D Images
+*.3dm
+*.max
+
+# dev/build related
+.idea
+build
+*.lock
+package-lock.json
+yarn.lock
+coverage
+!build/.gitkeep
+.env
+.DS_Store
+>>>>>>> 1d7c60bae045e10111cc049add5fa33a00fbfa49
