@@ -49,3 +49,4 @@ backend/database/*
 !backend/database/dbdumps/
 
 .vscode
+.prettierignore
