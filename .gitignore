@@ -2,6 +2,9 @@
 
 # dependencies
 /node_modules
+**/node_modules
+**/npm-debug.log
+build
 /.pnp
 .pnp.js
 
@@ -121,3 +124,6 @@ coverage
 !build/.gitkeep
 .env
 .DS_Store
+
+# ides and tools
+.tool-versions
