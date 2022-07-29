@@ -1,28 +1,37 @@
-version: "3.8"
+version: "3.9"
 services:
-    node-webserver:
-        build: "./frontend"
-        container_name: node-webserver
-        ports:
-            - "3000:3000"
-        volumes:
-            - "./frontend:/app"
-        restart: always
     php-server:
         build: "./backend/server"
         ports:
             - "8080:80"
         volumes:
-            - "./backend/server/php:/var/www/html"
-        restart: always
+            - "./backend/server:/var/www/html"
         extra_hosts:
             - "host.docker.internal:host-gateway"
+        depends_on:
+            - mysql-db
     mysql-db:
-        image: mysql:8.0
+        image: mysql:5.7.16
         ports:
-            - "3306:3306"
+            - 3306:3306
+        command:
+            [
+                "--default-authentication-plugin=mysql_native_password",
+                "--explicit_defaults_for_timestamp=true"
+            ]
         volumes:
-            - "./backend/database:/var/lib/mysql"
+            - ./backend/database/.mysql_data:/var/lib/mysql
         environment:
             - MYSQL_ROOT_PASSWORD=27112021
-        restart: always
+    node-webserver:
+        build:
+            context: "./frontend"
+            target: development
+        container_name: node-webserver
+        ports:
+            - "3000:3000"
+        volumes:
+            - "./frontend/src:/app/src"
+        depends_on:
+            - mysql-db
+            - php-server
