@@ -48,9 +48,7 @@ frontend/npm-debug.log*
 frontend/yarn-debug.log*
 frontend/yarn-error.log*
 
-!backend/database/
-backend/database/*
-!backend/database/dbdumps/
+backend/database/.mysql_data
 
 .vscode
 
@@ -128,9 +126,15 @@ coverage
 .env
 .DS_Store
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> 1d7c60bae045e10111cc049add5fa33a00fbfa49
 =======
 
 # ides and tools
 .tool-versions
 >>>>>>> main
+=======
+
+# ides and tools
+.tool-versions
+>>>>>>> fix_docker_compose

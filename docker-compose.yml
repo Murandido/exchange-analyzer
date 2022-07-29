@@ -11,14 +11,9 @@ services:
         depends_on:
             - mysql-db
     mysql-db:
-        image: mysql:5.7.16
+        build: "./backend/database"
         ports:
             - 3306:3306
-        command:
-            [
-                "--default-authentication-plugin=mysql_native_password",
-                "--explicit_defaults_for_timestamp=true",
-            ]
         volumes:
             - ./backend/database/.mysql_data:/var/lib/mysql
         environment:
