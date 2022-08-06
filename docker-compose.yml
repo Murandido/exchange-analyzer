@@ -15,7 +15,7 @@ services:
         ports:
             - 3306:3306
         volumes:
-            - ./backend/database/.mysql_data:/var/lib/mysql
+            - "db_data:/var/lib/mysql"
         environment:
             - MYSQL_ROOT_PASSWORD=27112021
     node-webserver:
@@ -30,3 +30,5 @@ services:
         depends_on:
             - mysql-db
             - php-server
+volumes:
+    db_data:
