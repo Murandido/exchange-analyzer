@@ -16,7 +16,7 @@ services:
             - 3306:3306
         volumes:
             - "db_data:/var/lib/mysql"
-            - "./backend/database/dbdumps/dbdump_latest.sql:/docker-entrypoint-initdb.d/"
+            - "./backend/database/dbdumps/dbdump_latest.sql:/docker-entrypoint-initdb.d/dbdump_latest.sql"
         environment:
             - MYSQL_ROOT_PASSWORD=27112021
     node-webserver:
