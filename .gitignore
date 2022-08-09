@@ -123,23 +123,13 @@ coverage
 !build/.gitkeep
 .env
 .DS_Store
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> 1d7c60bae045e10111cc049add5fa33a00fbfa49
-=======
 
 # ides and tools
 .tool-versions
->>>>>>> main
-=======
 
 # ides and tools
 .tool-versions
->>>>>>> fix_docker_compose
-=======
 
 # ides and tools
 .tool-versions
 frontend/nbproject/
->>>>>>> f39e138d2dbbd3d60b43513cc75a2c12cfabe404
