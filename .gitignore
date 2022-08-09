@@ -29,6 +29,7 @@ yarn-error.log*
 frontend/node_modules
 frontend/.pnp
 frontend/.pnp.js
+frontend/package-lock.json
 
 # testing
 frontend/coverage
@@ -47,11 +48,9 @@ frontend/npm-debug.log*
 frontend/yarn-debug.log*
 frontend/yarn-error.log*
 
-!backend/database/
-backend/database/*
-!backend/database/dbdumps/
-
 .vscode
+
+.prettierignore
 
 # JPEG
 *.jpg
@@ -127,3 +126,10 @@ coverage
 
 # ides and tools
 .tool-versions
+
+# ides and tools
+.tool-versions
+
+# ides and tools
+.tool-versions
+frontend/nbproject/
