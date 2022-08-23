@@ -16,13 +16,18 @@ class database {
 
     /**
      * Tries to connect to the database
+     *
+     * @param string $DB_HOST
+     * @param string $DB_PORT
+     * @param string $DB_USER
+     * @param string $DB_PASSWORD
+     * @param string $DB_NAME
      */
-    function __construct() {
+    function __construct(string $DB_HOST, string $DB_PORT, string $DB_USER, string $DB_PASSWORD, string $DB_NAME) {
         try {
-            $dsn = "mysql:host=" . getenv("DB_HOST") . ":3306;dbname=exchange_analyzer";
-            $db_password = getenv("DB_PASSWORD");
+            $dsn = "mysql:host=$DB_HOST:$DB_PORT;dbname=$DB_NAME";
 
-            $this->pdo = new PDO($dsn, "root", $db_password);
+            $this->pdo = new PDO($dsn, $DB_USER, $DB_PASSWORD);
             $this->connected = true;
             $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); 
         } catch (PDOException $err) {

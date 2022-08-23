@@ -1,35 +1,56 @@
 version: "3.9"
 services:
-    php-server:
-        build: "./backend/server"
-        ports:
-            - "8080:80"
-        volumes:
-            - "./backend/server/php:/var/www/html"
-        extra_hosts:
-            - "host.docker.internal:host-gateway"
-        depends_on:
-            - mysql-db
-    mysql-db:
-        image: mysql:8.0
-        ports:
-            - 3306:3306
-        volumes:
-            - "db_data:/var/lib/mysql"
-            - "./backend/database/dbdumps/dbdump_latest.sql:/docker-entrypoint-initdb.d/dbdump_latest.sql"
-        environment:
-            - MYSQL_ROOT_PASSWORD=27112021
-    node-webserver:
-        build:
-            context: "./frontend"
-            target: development
-        container_name: node-webserver
-        ports:
-            - "3000:3000"
-        volumes:
-            - "./frontend/src:/app/src"
-        depends_on:
-            - mysql-db
-            - php-server
+  php-server:
+    build:
+      context: "./backend/server"
+      target: server
+    ports:
+      - "8080:80"
+    volumes:
+      - "./backend/server/php:/var/www/html"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - mysql-db
+
+  composer:
+    image: composer:2.3
+    profiles:
+      - composer
+    volumes:
+      - "./backend/server/php:/composer"
+    working_dir: "/composer"
+
+  php-script:
+    build:
+      context: "./backend/server"
+      target: script
+    profiles:
+      - bash_php
+    volumes:
+      - "./backend/server/php:/php"
+    working_dir: "/php"
+
+  mysql-db:
+    image: mysql:8.0
+    ports:
+      - 3306:3306
+    volumes:
+      - "db_data:/var/lib/mysql"
+      - "./backend/database/dbdumps/dbdump_latest.sql:/docker-entrypoint-initdb.d/dbdump_latest.sql"
+    environment:
+      - MYSQL_ROOT_PASSWORD=27112021
+  node-webserver:
+    build:
+      context: "./frontend"
+      target: development
+    container_name: node-webserver
+    ports:
+      - "3000:3000"
+    volumes:
+      - "./frontend/src:/app/src"
+    depends_on:
+      - mysql-db
+      - php-server
 volumes:
-    db_data:
+  db_data:
