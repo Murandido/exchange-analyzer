@@ -143,3 +143,6 @@ coverage
 .tool-versions
 frontend/nbproject/
 >>>>>>> f39e138d2dbbd3d60b43513cc75a2c12cfabe404
+
+# php
+vendor
