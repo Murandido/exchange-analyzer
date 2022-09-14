@@ -133,3 +133,6 @@ coverage
 # ides and tools
 .tool-versions
 frontend/nbproject/
+
+# php
+vendor

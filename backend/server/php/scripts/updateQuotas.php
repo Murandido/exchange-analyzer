@@ -1,15 +1,26 @@
 <?php
 
 // require of the classes used in the code
-require realpath(dirname(__FILE__) . "/../utils/classes/fetch.php");
-require realpath(dirname(__FILE__) . "/../utils/classes/dbconnection.php");
+require __DIR__ . '/../utils/functions.php'; 
+require completeFilePath("../vendor/autoload.php");
+require completeFilePath("../utils/classes/fetch.php");
+require completeFilePath("../utils/classes/dbconnection.php");
 
-// api url and key extracted from environmental variables
-$API_URL = getenv("API_URL");
-$API_KEY = getenv("API_KEY");
+// load env file with dotenv library
+$dotenv = Dotenv\Dotenv::createImmutable(completeFilePath("../"));
+$dotenv->load();
+
+// declare environment variables as constants
+define('API_URL', $_ENV['API_URL']);
+define('API_KEY', $_ENV['API_KEY']);
+define('DB_HOST', $_ENV['DB_HOST']);
+define('DB_PORT', $_ENV['DB_PORT']);
+define('DB_USER', $_ENV['DB_USER']);
+define('DB_PASSWORD', $_ENV['DB_PASSWORD']);
+
 
 // the complete url
-$url = $API_URL . "/v6/" . $API_KEY . "/latest/BRL";
+$url = API_URL . "/v6/" . API_KEY . "/latest/BRL";
 
 // quota fetch
 $fetch = new fetch();
@@ -41,7 +52,7 @@ foreach ($response["response"]["conversion_rates"] as $key => $value) {
 */
 
 // instatiation of database class
-$db = new database();
+$db = new database(DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, "exchange_analyzer");
 
 // if the db connection is not established, exit early
 if (!$db->is_connected()) {
