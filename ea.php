@@ -8,12 +8,13 @@ Usage: ea [OPTIONS] <COMMAND>
 A website that helps you with recommendations to buy exchanges and make a profit
 
 Options:
-    -h, --help          Show this help
+    -h, --help                       Shows this help
 
 Commands:
-    init [OPTIONS]      Start the backend and frontend of the website
-    stop                Stop the backend and frontend of the website
-    composer [OPTIONS]  Up composer container and run commands inside it
+    init [OPTIONS]                   Starts the backend and frontend of the website
+    stop                             Stops the backend and frontend of the website
+    composer <OPTIONS> [ARGUMENT]    Ups composer container and run commands inside it
+    php-script <OPTIONS> <ARGUMENT>  Runs php scripts which are in "backend" folder inside the "php-script" container
 
 help;
 
@@ -24,26 +25,39 @@ Usage: ea init [OPTIONS]
 A command to start the backend and frontend of the website
 
 Options:
-    -h, --help          Show this help
-    -b, --build         Build (or rebuild) all ".Dockerfile"
+    -h, --help          Shows this help
+    -b, --build         Builds (or rebuild) all ".Dockerfile"
 
 initHelp;
 
 // composer command usage help
 $composerHelp = <<<composerHelp
-Usage: ea composer [OPTIONS] [ARGUMENT] 
+Usage: ea composer <OPTIONS> [ARGUMENT] 
 
 A command to up the composer container and run commands inside it
 
 Options:
-    -h, --help          Show this help
-    -i, --install       Install the composer.json packages
-    -u, --update        Update vendor directory in accord to composer.json
-    -a, --add           Adds the library indicated in the [ARGUMENT]
-    -d, --remove        Removes the library indicated in the [ARGUMENT]
-    -r, --run           Run the [ARGUMENT] as command inside the container
+    -h, --help               Shows this help
+    -i, --install            Installs the composer.json packages
+    -u, --update             Updates vendor directory in accord to composer.json
+    -a, --add <ARGUMENT>     Adds the library indicated in the <ARGUMENT>
+    -d, --remove <ARGUMENT>  Removes the library indicated in the <ARGUMENT>
+    -r, --run <ARGUMENT>     Runs the <ARGUMENT> as command inside the container
 
 composerHelp;
+
+// php-script command usage help
+$phpScriptHelp = <<<phpScriptHelp
+Usage: ea php-script <OPTIONS> <ARGUMENT>
+
+A command to run php scripts inside the container "php-script"
+
+Options:
+    -h, --help                   Shows this help
+    -e, --execute <ARGUMENT>     Runs a php file indicated in the <ARGUMENT> that is inside the "backend/server/php" directory
+    -r, --run <ARGUMENT>         Runs <ARGUMENT> as command inside the container
+
+phpScriptHelp;
 
 // stop the execution if there is no command
 if ($argc == 1) {
@@ -169,6 +183,55 @@ switch ($argv[1]) {
                 echo "\033[31mNo command or option detected\033[0m\n\n" . $composerHelp;
             exit;
         }
+    break;
+
+    // php-script container commands
+    case "php-script":
+        // if there is more than 4 arguments passed, stopt the execution
+        if ($argc > 4) {
+            echo "\033[31mNo command or option detected\033[0m\n\n" . $composerHelp;
+            exit;
+        }
+
+        // if there is 4 arguments passed, verify the third argument, because the fourth argument is a command/argument to run inside the container
+        if ($argc == 4) {
+            switch ($argv[2]) {
+                // execute command, it runs a php file that is inside the "backend/server/php" dir, requested in the fourth argument, inside the container
+                // exemple: ea php-script -e scripts/updateQuotas.php // runs the "backend/server/php/scripts/updateQuotas.php" file 
+                case "-e":
+                case "--execute":
+                    $output = shell_exec("docker-compose run --rm php-script php " . $argv[3]);
+                    echo $output. "\n";
+                exit;
+
+                // run command, it runs a command requested in the fourth argument inside the container
+                case "-r":
+                case "--run":
+                    $output = shell_exec("docker-compose run --rm php-script " . $argv[3]);
+                    echo $output . "\n";
+                exit;
+                
+                // stop the execution if there is no existing command/option
+                default:
+                    echo "\033[31mNo command or option detected\033[0m\n\n" . $phpScriptHelp;
+                exit;
+            }
+        }
+
+        // if there is 3 arguments, verify the argument and run the option/command
+        switch ($argv[2]) {
+            // help option
+            case "-h":
+            case "--help":
+                echo $phpScriptHelp;
+            exit;
+            
+            // stop the execution if there is no existing command/option
+            default:
+                echo "\033[31mNo command or option detected\033[0m\n\n" . $phpScriptHelp;
+            break;
+        }
+
     break;
 
     // options
