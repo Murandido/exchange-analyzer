@@ -8,13 +8,14 @@ Usage: ea [OPTIONS] <COMMAND>
 A website that helps you with recommendations to buy exchanges and make a profit
 
 Options:
-    -h, --help                       Shows this help
+    -h, --help                                          Shows this help
 
 Commands:
-    init [OPTIONS]                   Starts the backend and frontend of the website
-    stop                             Stops the backend and frontend of the website
-    composer <OPTIONS> [ARGUMENT]    Ups composer container and run commands inside it
-    php-script <OPTIONS> <ARGUMENT>  Runs php scripts which are in "backend" folder inside the "php-script" container
+    init [OPTIONS]                                      Starts the backend and frontend of the website
+    stop                                                Stops the backend and frontend of the website
+    composer <OPTIONS> [ARGUMENT]                       Ups composer container and run commands inside it
+    php-script <OPTIONS> <ARGUMENT>                     Runs php scripts which are in "backend" folder inside the "php-script" container
+    dbbackup [OPTIONS] <CONTAINER ID/NAME> <.SQL PATH>  Dumps and save the database into a .sql file, or restore a existing backup        
 
 help;
 
@@ -48,7 +49,7 @@ composerHelp;
 
 // php-script command usage help
 $phpScriptHelp = <<<phpScriptHelp
-Usage: ea php-script <OPTIONS> <ARGUMENT>
+Usage: ea php-script <OPTIONS>
 
 A command to run php scripts inside the container "php-script"
 
@@ -58,6 +59,18 @@ Options:
     -r, --run <ARGUMENT>         Runs <ARGUMENT> as command inside the container
 
 phpScriptHelp;
+
+// dbbackup command usage help
+$dbbackupHelp = <<<dbbackupHelp
+Usage: ea dbbackup [OPTIONS] <CONTAINER ID/NAME> <.SQL PATH>
+
+A command to dump and save the database into a .sql file, or restore a existing backup
+
+Options:
+    -h, --help        Shows this help
+    -r, --restore     Restores a resquested backup
+
+dbbackupHelp;
 
 // stop the execution if there is no command
 if ($argc == 1) {
@@ -231,6 +244,76 @@ switch ($argv[1]) {
                 echo "\033[31mNo command or option detected\033[0m\n\n" . $phpScriptHelp;
             break;
         }
+
+    break;
+
+    // backup command
+    case "dbbackup":
+        // if there is more than 5 arguments passed, stop the execution
+        if ($argc > 5) {
+            echo "\033[31mNo command or option detected\033[0m\n\n" . $dbbackupHelp;
+            exit;
+        }
+
+        // if there is 5 arguments passed, verify the argument and run the option/command
+        if ($argc == 5) {
+            // restore option
+            switch ($argv[2]) {
+                case "-r":
+                case "--restore":
+                    $output = shell_exec("docker exec -i {$argv[3]} sh -c 'exec mysql -uroot -p" . '$MYSQL_ROOT_PASSWORD' . " exchange_analyzer' < {$argv[4]}");
+
+                    echo "Command executed\n";
+                exit;
+
+                // stop the execution if there is no existing command/option
+                default:
+                    echo "\033[31mNo command or option detected\033[0m\n\n" . $dbbackupHelp;
+                exit;
+            }
+        }
+
+        // if there is 3 arguments passed, verify the argument and run the option/command
+        if ($argc == 3) {
+            switch ($argv[2]) {
+                // help option
+                case "-h":
+                case "--help":
+                    echo $dbbackupHelp;
+                exit;
+                
+                // running the command
+                default:
+                    $output = shell_exec("docker exec {$argv[2]} sh -c 'exec mysqldump -uroot -p" . '$MYSQL_ROOT_PASSWORD' . " exchange_analyzer'");
+                
+                    // if there is an error, print "ERROR" and stop the execution
+                    if ($output == NULL || $output == false) {
+                        echo "ERROR";
+                        exit;
+                    }
+                    
+                    // the var with db dump
+                    $dbDump = $output;
+        
+                    // if the file "/backend/database/dbdumps/dbdump_latest.sql" exists, rename it to "dbdump_date-of-last-change-file"
+                    if (is_file(__DIR__ . "/backend/database/dbdumps/dbdump_latest.sql")) {
+                        $newName = "dbdump_" . date("m-d-Y_H:i:s", filectime(__DIR__ .  "/backend/database/dbdumps/dbdump_latest.sql")) . ".sql";
+                        rename(__DIR__ .  "/backend/database/dbdumps/dbdump_latest.sql", __DIR__ . "/backend/database/dbdumps/$newName");
+                    }
+        
+                    // open (or create) "/backend/database/dbdumps/dbdump_latest.sql", and write the dbdump inside of it
+                    $newDump = fopen(__DIR__ .  "/backend/database/dbdumps/dbdump_latest.sql", "a+");
+                    fwrite($newDump, $dbDump);
+                    fclose($newDump);
+        
+                    echo "DB Dump finished\n";
+                exit;
+            }
+        }
+
+        // stop the execution if there is 2 arguments passed or less
+        echo "\033[31mNo command or option detected\033[0m\n\n" . $dbbackupHelp;
+        exit;
 
     break;
 
