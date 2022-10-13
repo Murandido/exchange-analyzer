@@ -39,7 +39,7 @@ services:
       - "db_data:/var/lib/mysql"
       - "./backend/database/dbdumps/dbdump_latest.sql:/docker-entrypoint-initdb.d/dbdump_latest.sql"
     environment:
-      - MYSQL_ROOT_PASSWORD=27112021
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
 
   node-webserver:
     build:

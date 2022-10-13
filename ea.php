@@ -108,7 +108,7 @@ switch ($argv[1]) {
                 // rebuild the Dockerfiles, up the containers, and get off the script
                 case "-b":
                 case "--build":
-                    shell_exec("docker-compose up -d --build");
+                    shell_exec("docker-compose --env-file ./backend/server/php/.env up -d --build");
                     exit;
                 
                 // if there is no valid command, get off the script
@@ -119,7 +119,7 @@ switch ($argv[1]) {
         }
 
         // up the containers if there is no sub command
-        shell_exec("docker-compose up -d");
+        shell_exec("docker-compose ./backend/server/php/.env up -d");
 
     break;
 
@@ -213,14 +213,14 @@ switch ($argv[1]) {
                 // exemple: ea php-script -e scripts/updateQuotas.php // runs the "backend/server/php/scripts/updateQuotas.php" file 
                 case "-e":
                 case "--execute":
-                    $output = shell_exec("docker-compose run --rm php-script php " . $argv[3]);
+                    $output = shell_exec("docker-compose --env-file ./backend/server/php/.env run --rm php-script php " . $argv[3]);
                     echo $output. "\n";
                 exit;
 
                 // run command, it runs a command requested in the fourth argument inside the container
                 case "-r":
                 case "--run":
-                    $output = shell_exec("docker-compose run --rm php-script " . $argv[3]);
+                    $output = shell_exec("docker-compose --env-file ./backend/server/php/.env run --rm php-script " . $argv[3]);
                     echo $output . "\n";
                 exit;
                 
