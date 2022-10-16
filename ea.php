@@ -95,6 +95,57 @@ switch ($argv[1]) {
             // "composer install" in the composer container | command used: "docker-compose run --rm <container-name-in-the-docker-compose> <command>"
             shell_exec("docker-compose run --rm composer composer install");    
         }
+        
+        // if the .env file doesn't exist, execute this block
+        if (!is_file(__DIR__ . "/backend/server/php/.env")) {
+            // asks if user wants to configure based on .env.sample, if not, stop execution
+            while (true) {
+                echo ".env file not found in ./backend/server/php/ folder. Would you like to configure one based on the .env.sample which is present in the ./backend/server/php/ folder? If you don't want, the command will be interrupted(Y/N)\n";
+
+                $response = readline();
+
+                switch ($response) {
+                    case "y":
+                    case "Y":
+                    case "Yes":
+                    case "yes":
+                        // do nothing
+                    break;
+
+                    case "n":
+                    case "N":
+                    case "No":
+                    case "no":
+                        // do nothing, just exit
+                    exit;
+                    
+                    default:
+                        // do nothing, just repeat
+                    continue 2;
+                }
+
+                break;
+            }
+
+            // create the .env file and asks the values of the variables to the file
+            $dot_env_sample = file(__DIR__ . "/backend/server/php/.env.sample");
+
+            foreach ($dot_env_sample as $env) {
+                $env = explode("=", $env);
+
+                $env_var_name = $env[0];
+
+                $envs[$env_var_name] = readline("What is the value of '$env_var_name'? ");
+            }
+
+            $dot_env_file = fopen(__DIR__ . "/backend/server/php/.env", "a+");
+
+            foreach ($envs as $env_var_name => $env_var_value) {
+                fwrite($dot_env_file, "$env_var_name='$env_var_value'\n");
+            }
+
+            fclose($dot_env_file);
+        }
 
         // sub commands / command options
         if ($argc == 3) {
@@ -119,7 +170,7 @@ switch ($argv[1]) {
         }
 
         // up the containers if there is no sub command
-        shell_exec("docker-compose ./backend/server/php/.env up -d");
+        shell_exec("docker-compose --env-file ./backend/server/php/.env up -d");
 
     break;
 
