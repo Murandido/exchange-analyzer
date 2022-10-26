@@ -1,13 +1,12 @@
 <?php
 
 // require of the classes used in the code
-require __DIR__ . '/../utils/functions.php'; 
-require completeFilePath("../vendor/autoload.php");
-require completeFilePath("../utils/classes/fetch.php");
-require completeFilePath("../utils/classes/dbconnection.php");
+require __DIR__ . "/../vendor/autoload.php";
+require __DIR__ . "/../utils/classes/fetch.php";
+require __DIR__ . "/../utils/classes/dbconnection.php";
 
 // load env file with dotenv library
-$dotenv = Dotenv\Dotenv::createImmutable(completeFilePath("../"));
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . "/../");
 $dotenv->load();
 
 // declare environment variables as constants
