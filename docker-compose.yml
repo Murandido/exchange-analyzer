@@ -1,6 +1,8 @@
 version: "3.9"
 services:
   php-server:
+    container_name: PHP
+    hostname: php
     build:
       context: "./backend"
       target: php-server
@@ -12,16 +14,24 @@ services:
       - "host.docker.internal:host-gateway"
     depends_on:
       - mysql-db
+    networks:
+      my_network:
 
   composer:
+    container_name: PHP_Composer
+    hostname: php_composer
     image: composer:2.3
     profiles:
       - composer
     volumes:
       - "./backend/server/php:/composer"
     working_dir: "/composer"
+    networks:
+      my_network:
 
   php-script:
+    container_name: PHP_Scripts
+    hostname: php_scripts
     build:
       context: "./backend"
       target: php-script
@@ -30,8 +40,12 @@ services:
     volumes:
       - "./backend/server/php:/php"
     working_dir: "/php"
+    networks:
+      my_network:
 
   mysql-db:
+    container_name: Mysql_Server
+    hostname: mysql
     image: mysql:8.0
     ports:
       - 3306:3306
@@ -40,8 +54,12 @@ services:
       - "./backend/database/dbdumps/dbdump_latest.sql:/docker-entrypoint-initdb.d/dbdump_latest.sql"
     environment:
       - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+    networks:
+      my_network:
 
   node-webserver:
+    container_name: Node_Server
+    hostname: node
     build:
       context: "./frontend"
       target: development
@@ -53,5 +71,10 @@ services:
     depends_on:
       - mysql-db
       - php-server
+    networks:
+      my_network:
 volumes:
   db_data:
+
+networks:
+  my_network:
