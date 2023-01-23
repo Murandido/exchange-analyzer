@@ -14,6 +14,8 @@ define('API_KEY', $_ENV['API_KEY']);
 // fetch
 $fetch = new fetch();
 
+echo "\n **** Running proposal collections " . date('l jS \of F Y h:i:s A') . "****\n";
+
 /*
  * Parte 1: INVESTIMENTO
  * 
