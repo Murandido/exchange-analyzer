@@ -24,10 +24,11 @@ $fetch = new fetch();
  */
 $moeda_base = "BRL";
 $moeda_investida = "EUR";
-$quantia_moeda_investida = 200;
+$quantia_moeda_investida = 2000;
 $url_moeda_investida_moeda_base = API_URL . "/v6/" . API_KEY . "/pair/$moeda_investida/$moeda_base";
 $response = ($fetch->get($url_moeda_investida_moeda_base))["response"];
-$cotação_moeda_investida_em_moeda_base_antigo = (float) $response["conversion_rate"]; //valor dia 01/11
+//$cotação_moeda_investida_em_moeda_base_antigo = (float) $response["conversion_rate"]; //valor dia 01/11
+$cotação_moeda_investida_em_moeda_base_antigo = 5.63;  # collected on 21/1/23
 $valor_investido = $quantia_moeda_investida * $cotação_moeda_investida_em_moeda_base_antigo;
 $moedas_exploradas = [
     "Dólar" => [
@@ -124,6 +125,7 @@ foreach ($moedas_exploradas as $nome_moeda => $info_moeda) {
         . "\t$moeda_investida -> {$info_moeda['codigo']} -> $moeda_base\n"
         . "\t\tvalores: $moeda_investida({$info_moeda['codigo']})=$valor_moeda_investida_explorada, "
         . "{$info_moeda['codigo']}($moeda_base)=$valor_moeda_explorada_base\n"
-        . "\t\ttotal: $total_cambiado\n";
+        . "\t\ttotal: $total_cambiado\n"
+        . "\t\tlucro: " .($total_cambiado - $valor_investido) . "\n";
     }
 }
