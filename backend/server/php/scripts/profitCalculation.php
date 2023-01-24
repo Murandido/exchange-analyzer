@@ -24,14 +24,14 @@ echo "\n **** Running proposal collections " . date('l jS \of F Y h:i:s A') . "*
  *  2- calculamos o valor investido
  *  3- setamos a lista de moedas exploradas
  */
-$moeda_base = "BRL";
-$moeda_investida = "EUR";
-$quantia_moeda_investida = 2000;
-$url_moeda_investida_moeda_base = API_URL . "/v6/" . API_KEY . "/pair/$moeda_investida/$moeda_base";
-$response = ($fetch->get($url_moeda_investida_moeda_base))["response"];
-//$cotação_moeda_investida_em_moeda_base_antigo = (float) $response["conversion_rate"]; //valor dia 01/11
-$cotação_moeda_investida_em_moeda_base_antigo = 5.63;  # collected on 21/1/23
-$valor_investido = $quantia_moeda_investida * $cotação_moeda_investida_em_moeda_base_antigo;
+$MB = "BRL";  // moeda base
+$MI = "EUR";  // moeda investida
+$qMI = 2000;  // quantidade moeda investida
+$url_MI_MB = API_URL . "/v6/" . API_KEY . "/pair/$MI/$MB";
+$response = ($fetch->get($url_MI_MB))["response"];
+//$cotacao_MI_MB = (float) $response["conversion_rate"]; //valor dia 01/11
+$cotacao_MI_MB = 5.63;  # collected on 21/1/23
+$total_investido = $qMI * $cotacao_MI_MB;
 $moedas_exploradas = [
     "Dólar" => [
         "codigo" => "USD"
@@ -105,29 +105,29 @@ $moedas_exploradas = [
  *    1.2.2- euro em peso
  *    1.2.3- euro em franco
  *  2- calculamos o total cambiado (moeda investida em moeda explorada)
- *  3- 
+ *  3- imprimimos em teal
  */
 foreach ($moedas_exploradas as $nome_moeda => $info_moeda) {
     // busca o valor da moeda investida na moeda explorada
-    $url_moeda_investida_moeda_explorada = API_URL . "/v6/" . API_KEY . "/pair/$moeda_investida/{$info_moeda["codigo"]}";
-    $moeda_investida_explorada = ($fetch->get($url_moeda_investida_moeda_explorada))["response"];
-    $valor_moeda_investida_explorada = $moeda_investida_explorada["conversion_rate"];
+    $url_MI_ME = API_URL . "/v6/" . API_KEY . "/pair/$MI/{$info_moeda["codigo"]}";
+    $response = $fetch->get($url_MI_ME)["response"];
+    $cotacao_MI_ME = $response["conversion_rate"];
     
     // busca o valor da moeda explorada na moeda base
-    $url_moeda_explorada_moeda_base = API_URL . "/v6/" . API_KEY . "/pair/{$info_moeda["codigo"]}/$moeda_base";
-    $moeda_explorada_base = ($fetch->get($url_moeda_explorada_moeda_base))["response"];
-    $valor_moeda_explorada_base = $moeda_explorada_base["conversion_rate"];
+    $url_ME_MB = API_URL . "/v6/" . API_KEY . "/pair/{$info_moeda["codigo"]}/$MB";
+    $response = ($fetch->get($url_ME_MB))["response"];
+    $cotacao_ME_MB = $response["conversion_rate"];
 
-    $total_cambiado = $quantia_moeda_investida * $valor_moeda_investida_explorada * $valor_moeda_explorada_base;
+    $total_cambiado = $qMI * $cotacao_MI_ME * $cotacao_ME_MB;
 
-    if ($total_cambiado > $valor_investido) {
+    if ($total_cambiado > $total_investido) {
         echo "\n----------------------\n"
         . "TRANSACAO FAVORAVEL\n"
-        . "investimento inicial:$moeda_base($moeda_investida)=$quantia_moeda_investida*$cotação_moeda_investida_em_moeda_base_antigo=$valor_investido\n"
-        . "\t$moeda_investida -> {$info_moeda['codigo']} -> $moeda_base\n"
-        . "\t\tvalores: $moeda_investida({$info_moeda['codigo']})=$valor_moeda_investida_explorada, "
-        . "{$info_moeda['codigo']}($moeda_base)=$valor_moeda_explorada_base\n"
+        . "investimento inicial:$MB($MI)=$qMI*$cotacao_MI_MB=$total_investido\n"
+        . "\t$MI -> {$info_moeda['codigo']} -> $MB\n"
+        . "\t\tvalores: $MI({$info_moeda['codigo']})=$cotacao_MI_ME, "
+        . "{$info_moeda['codigo']}($MB)=$cotacao_ME_MB\n"
         . "\t\ttotal: $total_cambiado\n"
-        . "\t\tlucro: " .($total_cambiado - $valor_investido) . "\n";
+        . "\t\tlucro: " .($total_cambiado - $total_investido) . "\n";
     }
 }
