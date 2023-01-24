@@ -32,6 +32,10 @@ $response = ($fetch->get($url_MI_MB))["response"];
 //$cotacao_MI_MB = (float) $response["conversion_rate"]; //valor dia 01/11
 $cotacao_MI_MB = 5.63;  # collected on 21/1/23
 $total_investido = $qMI * $cotacao_MI_MB;
+
+/**
+ * @TODO: move this to a .ini file
+ */
 $moedas_exploradas = [
     "Dólar" => [
         "codigo" => "USD"
