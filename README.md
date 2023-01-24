@@ -39,7 +39,7 @@ A project with a backend written in PHP, with MySQL as a database, a frontend wr
 First, you need to clone the repository in your computer:
 
 ```bash
-  git clone https://github.com/Murandido/portifolio.git (name of the directory that will be the repository)
+  git clone https://github.com/Murandido/exchange-analyzer-POC.git (name of the directory that will be the repository)
 ```
 
 There are two ways to setup the project, with the CLI, or manually.
