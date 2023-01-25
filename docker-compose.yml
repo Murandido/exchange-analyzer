@@ -57,22 +57,6 @@ services:
     networks:
       my_network:
 
-  node-webserver:
-    container_name: Node_Server
-    hostname: node
-    build:
-      context: "./frontend"
-      target: development
-    container_name: node-webserver
-    ports:
-      - "3000:3000"
-    volumes:
-      - "./frontend/src:/app/src"
-    depends_on:
-      - mysql-db
-      - php-server
-    networks:
-      my_network:
 volumes:
   db_data:
 
