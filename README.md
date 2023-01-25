@@ -1,6 +1,6 @@
 # Exchange Analyzer
 
-A project with a backend written in PHP, with MySQL as a database, a frontend written in JavaScript using the React framework, which observes exchange quotas using an API and helps you profit from your purchased exchange.
+A project with a backend written in PHP, with MySQL as a database, a frontend written in JavaScript using the React framework, which observes exchange quotas using an API and helps you profit from your purchased exchange. This repository is for a POC (Proof of Concept) of a future project, these things are not made for a common user to use.
 
 ## Table of contents
 
